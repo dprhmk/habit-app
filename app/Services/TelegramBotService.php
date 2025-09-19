@@ -104,7 +104,7 @@ class TelegramBotService
         $data   = $callback['data'];
 
         if ($data === 'status') {
-            $text = $this->habitService->getStatus($chatId);
+            $text = $this->getStatus($chatId);
         } elseif ($data === 'add') {
             Cache::put("state:$chatId", ['step' => 'adding_name'], 3600);
             $text = "✍️ Введи назву нової звички";
@@ -119,6 +119,20 @@ class TelegramBotService
 
 
         $this->sendMainMenu($chatId, $text);
+    }
+
+    public function getStatus(int $chatId): string
+    {
+        $habits = $this->habitService->getAll($chatId);
+
+        if ($habits->isEmpty()) return "У тебе ще немає звичок!";
+
+        $text = "";
+        foreach ($habits as $habit) {
+            $text .= "<b>{$habit->name}</b>: {$habit->duration()}<br>";
+        }
+
+        return $text;
     }
 
     /**

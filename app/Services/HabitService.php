@@ -29,19 +29,6 @@ class HabitService
         $habit->save();
     }
 
-    public function getStatus(int $chatId): string
-    {
-        $habits = $this->getAll($chatId);
-        if ($habits->isEmpty()) return "У тебе ще немає звичок!";
-
-        $text = "\n";
-        foreach ($habits as $habit) {
-            $text .= "{$habit->name}: {$habit->duration()}\n";
-        }
-
-        return $text;
-    }
-
     public function findByName(int $chatId, string $name)
     {
         return Habit::where('chat_id', $chatId)->where('name', $name)->first();
