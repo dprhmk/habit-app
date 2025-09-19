@@ -127,9 +127,9 @@ class TelegramBotService
 
         if ($habits->isEmpty()) return "У тебе ще немає звичок!";
 
-        $text = "";
+        $text = "\n";
         foreach ($habits as $habit) {
-            $text .= "<b>{$habit->name}</b>: {$habit->duration()}<br>";
+            $text .= "{$habit->name}: {$habit->duration()}\n";
         }
 
         return $text;
