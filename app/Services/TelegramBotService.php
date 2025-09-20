@@ -127,17 +127,18 @@ class TelegramBotService
 
         if ($habits->isEmpty()) return "У тебе ще немає звичок!";
 
-        $text = "\n";
+        $text = "\n"; // відступ зверху
         foreach ($habits as $habit) {
-            $text .= "{$habit->name}: {$habit->duration()}\n";
+            // жирна назва та емоджі
+            $text .= "<b>{$habit->name}</b>: {$habit->duration()}\n";
         }
+
+        // додатковий відступ перед кнопками
+        $text .= "\n";
 
         return $text;
     }
 
-    /**
-     * Відправка головного меню користувачу
-     */
     public function sendMainMenu(int $chatId, string $text): void
     {
         $keyboard = [
@@ -150,6 +151,9 @@ class TelegramBotService
             ],
         ];
 
+        // Додаємо кілька рядків відступу між текстом і кнопками через parse_mode HTML
+        $text = "\n\n" . $text;
+
         $this->telegram->sendMessage([
             'chat_id'      => $chatId,
             'text'         => $text,
@@ -157,4 +161,5 @@ class TelegramBotService
             'reply_markup' => json_encode($keyboard),
         ]);
     }
+
 }
