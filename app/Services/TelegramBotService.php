@@ -52,7 +52,7 @@ class TelegramBotService
             // FSM: додавання назви звички
             if ($state['step'] === 'adding_name') {
                 Cache::put("state:$chatId", ['step' => 'adding_date', 'name' => $text], 3600);
-                $this->sendMainMenu($chatId, "✍️ Введи дату у форматі YYYY-MM-DD HH:MM");
+                $this->sendMainMenu($chatId, "✍️ Введи дату початку звички");
                 return;
             }
 
@@ -66,7 +66,7 @@ class TelegramBotService
                     Cache::forget("state:$chatId");
                     $this->sendMainMenu($chatId, "✅ Звичка '$name' додана з датою $dateTimeInput!");
                 } catch (\Throwable) {
-                    $this->sendMainMenu($chatId, "⚠️ Невірний формат дати $dateTimeInput");
+                    $this->sendMainMenu($chatId, "⚠️ Невірний формат дати $dateTimeInput, спробуй ввести у форматі 2025-01-01 14:20");
                 }
                 return;
             }
@@ -125,16 +125,18 @@ class TelegramBotService
     {
         $habits = $this->habitService->getAll($chatId);
 
-        if ($habits->isEmpty()) return "У тебе ще немає звичок!";
-
-        $text = "\n"; // відступ зверху
-        foreach ($habits as $habit) {
-            // жирна назва та емоджі
-            $text .= "<b>{$habit->name}</b>: {$habit->duration()}\n";
+        if ($habits->isEmpty()) {
+            return "📭 У тебе ще немає звичок!";
         }
 
-        // додатковий відступ перед кнопками
-        $text .= "\n";
+        $text = "\n\n"; // заголовок жирний
+
+        foreach ($habits as $habit) {
+            // Відображення у блоках з емоджі, жирною назвою і красивим форматуванням
+            $text .= "🟢 <b>{$habit->name}</b>\n";
+            $text .= "⏱ <i>{$habit->duration()}</i>\n";
+            $text .= "────────────────────\n"; // горизонтальна лінія як роздільник
+        }
 
         return $text;
     }
@@ -150,9 +152,6 @@ class TelegramBotService
                 ],
             ],
         ];
-
-        // Додаємо кілька рядків відступу між текстом і кнопками через parse_mode HTML
-        $text = "\n\n" . $text;
 
         $this->telegram->sendMessage([
             'chat_id'      => $chatId,
