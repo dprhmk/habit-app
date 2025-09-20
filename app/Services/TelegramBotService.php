@@ -134,7 +134,7 @@ class TelegramBotService
         foreach ($habits as $habit) {
             // Відображення у блоках з емоджі, жирною назвою і красивим форматуванням
             $text .= "🟢 <b>{$habit->name}</b>\n";
-            $text .= "⏱ <i>{$habit->duration()}</i>\n";
+            $text .= "⏱ {$habit->duration()}\n";
             $text .= "────────────────────\n"; // горизонтальна лінія як роздільник
         }
 
