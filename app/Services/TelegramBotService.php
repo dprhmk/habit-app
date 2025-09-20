@@ -52,7 +52,7 @@ class TelegramBotService
             // FSM: додавання назви звички
             if ($state['step'] === 'adding_name') {
                 Cache::put("state:$chatId", ['step' => 'adding_date', 'name' => $text], 3600);
-                $this->sendMainMenu($chatId, "✍️ Введи дату початку звички");
+                $this->sendMainMenu($chatId, "✍️ Введи дату початку звички у форматі YYYY-MM-DD HH:MM");
                 return;
             }
 
@@ -66,7 +66,7 @@ class TelegramBotService
                     Cache::forget("state:$chatId");
                     $this->sendMainMenu($chatId, "✅ Звичка '$name' додана з датою $dateTimeInput!");
                 } catch (\Throwable) {
-                    $this->sendMainMenu($chatId, "⚠️ Невірний формат дати $dateTimeInput, спробуй ввести у форматі 2025-01-01 14:20");
+                    $this->sendMainMenu($chatId, "⚠️ Невірний формат дати $dateTimeInput, спробуй ввести у форматі YYYY-MM-DD HH:MM");
                 }
                 return;
             }
